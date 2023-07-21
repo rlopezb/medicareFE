@@ -1,17 +1,27 @@
+import React, {useState} from "react";
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
-import React from "react";
 import {Link} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import api from "../api/api";
 
 function Login() {
-  let user = useSelector(gs => gs.user);
   let dispatch = useDispatch();
   let navigate = useNavigate();
+  let [username, setUsername] = useState(undefined);
+  let [password, setPassword] = useState(undefined);
 
-  function onLogin(event) {
+  const onChangeUsername = (event) => {
+    event.preventDefault();
+    setUsername(event.target.value);
+  };
+  const onChangePassword = (event) => {
+    event.preventDefault();
+    setPassword(event.target.value);
+  };
+
+  const onLogin = (event) => {
     event.preventDefault();
     dispatch(login());
   }
@@ -19,18 +29,24 @@ function Login() {
   function login() {
     return dispatch => {
       api
-          .post("/auth/login", {username: 'rlopezb', password: '25Junio2005'})
+          .post("/auth/login", {username: username, password: password})
           .then(result => {
             dispatch({type: "SET_USER", payload: result.data});
             toast.success("User logged successfully");
-            if (user.role === "ROLE_ADMIN") {
+            if (result.data.role === "ROLE_ADMIN") {
               navigate('/admin');
             } else {
               navigate('/home');
             }
           })
           .catch(error => {
-            toast.error(error.message);
+            if (error.response) {
+              toast.error("Wrong user or password");
+            } else if (error.request) {
+              toast.error("No connection. Try again later.");
+            } else {
+              toast.error("Error: " + error.message);
+            }
           });
     };
 
@@ -42,12 +58,12 @@ function Login() {
         <Card style={{width: '18rem', margin: '0 auto'}} className="shadow-lg">
           <Card.Img variant="top" src="img/medicare.jpg"/>
           <Card.Body>
-            <Card.Title>Medicare</Card.Title>
+            <Card.Title>Medicare user login</Card.Title>
             <Form>
               <Form.Group className="mb-3"><Form.Label className="text-center">Username</Form.Label><Form.Control
-                  type="text" placeholder="Enter username"/></Form.Group>
+                  type="text" placeholder="Enter username" onChange={onChangeUsername}/></Form.Group>
               <Form.Group className="mb-3"><Form.Label className="text-center">Password</Form.Label><Form.Control
-                  type="password" placeholder="Enter password"/></Form.Group>
+                  type="password" placeholder="Enter password" onChange={onChangePassword}/></Form.Group>
               <div className="d-grid"><Button variant="primary" type="submit"
                                               onClick={(event) => onLogin(event)}>Login</Button></div>
             </Form>
