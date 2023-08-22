@@ -1,9 +1,8 @@
 import axios from 'axios';
 import store from "../store/store";
 
-
 const api = axios.create({
-  baseURL: `http://localhost:8080/medicare/api`,
+  baseURL: 'http://' + process.env.REACT_APP_API_URL + '/medicare/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
