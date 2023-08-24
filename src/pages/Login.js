@@ -72,6 +72,9 @@ function Login() {
                 Don't have an account?{" "}
                 <Link to="/register" className="text-primary fw-bold">Sign up</Link>
               </p>
+              <p>
+                V0.0.1
+              </p>
             </div>
           </Card.Body>
         </Card>
