@@ -73,7 +73,7 @@ function Login() {
                 <Link to="/register" className="text-primary fw-bold">Sign up</Link>
               </p>
               <p>
-                V0.0.5
+                V0.0.6
               </p>
             </div>
           </Card.Body>
