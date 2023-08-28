@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import api from "../api/api";
+import LoginLayout from "../layouts/LoginLayout";
 
 function Login() {
   let dispatch = useDispatch();
@@ -52,32 +53,28 @@ function Login() {
 
   }
 
-  return <Container className="vh-100 flex-column d-flex justify-content-center align-content-center">
-    <Row>
-      <Col>
-        <Card style={{width: '18rem', margin: '0 auto'}} className="shadow-lg">
-          <Card.Img variant="top" src="img/medicare.jpg"/>
-          <Card.Body>
-            <Card.Title>Medicare user login</Card.Title>
-            <Form>
-              <Form.Group className="mb-3"><Form.Label className="text-center">Username</Form.Label><Form.Control
-                  type="text" placeholder="Enter username" onChange={onChangeUsername}/></Form.Group>
-              <Form.Group className="mb-3"><Form.Label className="text-center">Password</Form.Label><Form.Control
-                  type="password" placeholder="Enter password" onChange={onChangePassword}/></Form.Group>
-              <div className="d-grid"><Button variant="primary" type="submit"
-                                              onClick={(event) => onLogin(event)}>Login</Button></div>
-            </Form>
-            <div className="mt-3">
-              <p className="text-center">
-                Don't have an account?{" "}
-                <Link to="/register" className="text-primary fw-bold">Sign up</Link>
-              </p>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
-  </Container>
+  return <LoginLayout>
+    <Card style={{width: '18rem', margin: '0 auto'}} className="shadow-lg">
+      <Card.Img variant="top" src="img/medicare.jpg"/>
+      <Card.Body>
+        <Card.Title>Medicare user login</Card.Title>
+        <Form>
+          <Form.Group className="mb-3"><Form.Label className="text-center">Username</Form.Label><Form.Control
+              type="text" placeholder="Enter username" onChange={onChangeUsername}/></Form.Group>
+          <Form.Group className="mb-3"><Form.Label className="text-center">Password</Form.Label><Form.Control
+              type="password" placeholder="Enter password" onChange={onChangePassword}/></Form.Group>
+          <div className="d-grid"><Button variant="primary" type="submit"
+                                          onClick={(event) => onLogin(event)}>Login</Button></div>
+        </Form>
+        <div className="mt-3">
+          <p className="text-center">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-primary fw-bold">Sign up</Link>
+          </p>
+        </div>
+      </Card.Body>
+    </Card>
+  </LoginLayout>
 }
 
 export default Login;

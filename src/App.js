@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <Container>
+    <Container fluid className="p-0">
       <ToastContainer position="top-center" theme="colored"/>
       <AppRouter/>
     </Container>
