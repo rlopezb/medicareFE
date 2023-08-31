@@ -1,20 +1,32 @@
-import DefaultLayout from "../layouts/DefaultLayout";
-import React, {useCallback, useEffect, useState} from "react";
-import {Button, ButtonGroup, Col, Container, Form, Row, Table} from "react-bootstrap";
-import {toast} from "react-toastify";
-import api from "../api/api";
-import Drugcard from "../components/Drugcard";
+import DefaultLayout from '../layouts/DefaultLayout';
+import React, {useEffect, useState} from 'react';
+import {Button, ButtonGroup, Col, Container, Row} from 'react-bootstrap';
+import {toast} from 'react-toastify';
+import api from '../api/api';
+import MedicineCard from '../components/MedicineCard';
+import SideBar from '../components/SideBar';
 
 function Home() {
-  let [medicines, setMedicines] = useState([]);
-  let [medicine, setMedicine] = useState(undefined);
-  let [pagination, setPagination] = useState({page: 0});
-  let [search, setSearch] = useState("");
+  const [medicines, setMedicines] = useState([]);
+  const [pagination, setPagination] = useState({page: 0});
+  let filter = {};
 
-  let getMedicines = useCallback((search) => {
-    api.get("/medicine?page=" + pagination.page + (search.length > 0 ? "&name=" + search : ""))
+  let getMedicines = () => {
+    let url = '/medicine?page=' + pagination.page;
+    if (filter.search && filter.search.length > 0)
+      url = url + '&search=' + filter.search;
+    if (filter.seller && filter.seller.length > 0)
+      url = url + '&seller=' + filter.seller;
+    if (typeof filter.price === 'number')
+      url = url + '&price=' + filter.price;
+    if (filter.sort && filter.sort.length > 0) {
+      url = url + '&sort=' + filter.sort;
+      if (filter.descending)
+        url = url + ',desc';
+    }
+    api.get(url)
         .then(response => {
-          setMedicines([...response.data.content]);
+          setMedicines(response.data.content);
           setPagination({
             page: response.data.number,
             total: response.data.totalElements,
@@ -29,89 +41,54 @@ function Home() {
           console.log(error);
           toast.error(error.message);
         });
-  },[pagination.page]);
+  };
+
   let onFirst = () => {
-    pagination.page = 0;
-    getMedicines(search);
+    setPagination({...pagination, ...{page: 0}});
   };
   let onPrevious = () => {
-    pagination.page--;
-    getMedicines(search);
+    setPagination({...pagination, ...{page: pagination.page - 1}});
   };
   let onNext = () => {
-    pagination.page++;
-    getMedicines(search);
+    setPagination({...pagination, ...{page: pagination.page + 1}});
   };
   let onLast = () => {
-    pagination.page = pagination.pages - 1;
-    getMedicines(search);
+    setPagination({...pagination, ...{page: pagination.pages - 1}});
   };
 
-  let onSearch = () => {
-    pagination.page = 0;
-    getMedicines(search);
+  let onAdd = (id) => {
+    console.log('Medicine with id ' + id + ' added to shopping cart')
   }
-  let onSelect = (medicine) => {
-    setMedicine(medicine);
+
+  let onSearch = (newFilter) => {
+    filter = newFilter;
+    setPagination({page: 0});
+    getMedicines();
   }
-  let onClose = () => {
-    setMedicine(undefined);
-  }
-  useEffect(() => getMedicines(search), [getMedicines, search]);
+
+  useEffect(() => getMedicines(), []);
 
   return <DefaultLayout>
-    <Container>
-      {medicine?<Drugcard medicine={medicine} onClose={onClose}></Drugcard>:null}
-      <Row>
-        <Col>
-          <h2 className="float-start my-3">Drugs</h2>
-        </Col>
-        <Col>
-          <div className="float-end my-3">
-            <Form className="d-flex">
-              <Form.Control id="search" type="search" placeholder="Search" className="me-2" aria-label="Search"
-                            onChange={(event) => setSearch(event.target.value)}/>
-              <Button onClick={onSearch}>Search</Button>
-            </Form>
-          </div>
-        </Col>
+
+    <Container fluid>
+      <Row className='float-start mt-4'>
+        <SideBar onSearch={onSearch}/>
       </Row>
-      <Row>
-        <Col>
-          <Table striped bordered hover>
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Seller</th>
-              <th>Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            {medicines.map(medicine => {
-              return <tr key={medicine.id} onClick={() => onSelect(medicine)}>
-                <td>{medicine.name}</td>
-                <td>{medicine.price}</td>
-                <td>{medicine.seller}</td>
-                <td>{medicine.description}</td>
-              </tr>
-            })}
-            </tbody>
-          </Table>
-        </Col>
+      <Row className='justify-content-start row-cols-auto'>
+        {medicines.map(medicine => {
+          return <Col key={medicine.id} className='m-0 p-0'>
+            <MedicineCard medicine={medicine} onAdd={onAdd}></MedicineCard>
+          </Col>
+        })}
       </Row>
-      <Row>
-        <Col>
-          <ButtonGroup>
-            <Button variant="outline-secondary" onClick={onFirst} disabled={pagination.first}>&#8810;</Button>
-            <Button id="previous" variant="outline-secondary" onClick={onPrevious}
-                    disabled={pagination.first}>&#60;</Button>
-            <Button id="pagination"
-                    variant="outline-secondary">page {pagination.page + 1} of {pagination.pages}</Button>
-            <Button id="next" variant="outline-secondary" onClick={onNext} disabled={pagination.last}>&#62;</Button>
-            <Button variant="outline-secondary" onClick={onLast} disabled={pagination.last}>&#8811;</Button>
-          </ButtonGroup>
-        </Col>
+      <Row className='float-end   mt-4'>
+        <ButtonGroup>
+          <Button variant='outline-secondary' onClick={onFirst} disabled={pagination.first}>&#8810;</Button>
+          <Button variant='outline-secondary' onClick={onPrevious} disabled={pagination.first}>&#60;</Button>
+          <Button variant='outline-secondary'>page {pagination.page + 1} of {pagination.pages}</Button>
+          <Button variant='outline-secondary' onClick={onNext} disabled={pagination.last}>&#62;</Button>
+          <Button variant='outline-secondary' onClick={onLast} disabled={pagination.last}>&#8811;</Button>
+        </ButtonGroup>
       </Row>
     </Container>
   </DefaultLayout>

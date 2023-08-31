@@ -13,7 +13,7 @@ function AppBar({user}) {
         </Nav>
       </Navbar.Collapse>
       <Navbar.Collapse className="justify-content-end">
-        <Button variant="light">{user.firstName} {user.lastName}<BsPersonFill size={28} className="ms-2 text-primary"/></Button>
+        {user.username}<Button variant="light" className="ms-2"><BsPersonFill size={28} className="text-primary"/></Button>
         <Button variant="light"><BsFillCartFill size={28} className="text-primary"/></Button>
       </Navbar.Collapse>
     </Container>
