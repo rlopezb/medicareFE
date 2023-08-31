@@ -1,5 +1,5 @@
 import DefaultLayout from '../layouts/DefaultLayout';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Button, ButtonGroup, Col, Container, Row} from 'react-bootstrap';
 import {toast} from 'react-toastify';
 import api from '../api/api';
@@ -11,7 +11,7 @@ function Home() {
   const [pagination, setPagination] = useState({page: 0});
   let filter = {};
 
-  let getMedicines = () => {
+  const getMedicines = useCallback(() => {
     let url = '/medicine?page=' + pagination.page;
     if (filter.search && filter.search.length > 0)
       url = url + '&search=' + filter.search;
@@ -41,7 +41,7 @@ function Home() {
           console.log(error);
           toast.error(error.message);
         });
-  };
+  },[filter.descending, filter.price, filter.search, filter.seller, filter.sort, pagination.page]);
 
   let onFirst = () => {
     setPagination({...pagination, ...{page: 0}});
@@ -66,7 +66,7 @@ function Home() {
     getMedicines();
   }
 
-  useEffect(() => getMedicines(), []);
+  useEffect(() => getMedicines(), [getMedicines]);
 
   return <DefaultLayout>
 
