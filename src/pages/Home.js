@@ -7,11 +7,13 @@ import MedicineCard from '../components/MedicineCard';
 import SideBar from '../components/SideBar';
 
 function Home() {
+  const [loading, setLoading] = useState(false);
   const [medicines, setMedicines] = useState([]);
   const [pagination, setPagination] = useState({page: 0});
-  let filter = {};
+  const [filter, setFilter] = useState({});
 
   const getMedicines = useCallback(() => {
+    setLoading(true);
     let url = '/medicine?page=' + pagination.page;
     if (filter.search && filter.search.length > 0)
       url = url + '&search=' + filter.search;
@@ -36,10 +38,12 @@ function Home() {
             start: response.data.number * response.data.size + 1,
             end: response.data.number * response.data.size + response.data.size,
           });
+          setLoading(false);
         })
         .catch(error => {
           console.log(error);
           toast.error(error.message);
+          setLoading(false);
         });
   },[filter.descending, filter.price, filter.search, filter.seller, filter.sort, pagination.page]);
 
@@ -61,15 +65,13 @@ function Home() {
   }
 
   let onSearch = (newFilter) => {
-    filter = newFilter;
     setPagination({page: 0});
-    getMedicines();
+    setFilter(newFilter);
   }
 
-  useEffect(() => getMedicines(), [getMedicines]);
+  useEffect(() => getMedicines(), [getMedicines, filter]);
 
   return <DefaultLayout>
-
     <Container fluid>
       <Row className='float-start mt-4'>
         <SideBar onSearch={onSearch}/>
@@ -83,11 +85,11 @@ function Home() {
       </Row>
       <Row className='float-end   mt-4'>
         <ButtonGroup>
-          <Button variant='outline-secondary' onClick={onFirst} disabled={pagination.first}>&#8810;</Button>
-          <Button variant='outline-secondary' onClick={onPrevious} disabled={pagination.first}>&#60;</Button>
+          <Button variant='outline-secondary' onClick={onFirst} disabled={loading || pagination.first}>&#8810;</Button>
+          <Button variant='outline-secondary' onClick={onPrevious} disabled={loading || pagination.first}>&#60;</Button>
           <Button variant='outline-secondary'>page {pagination.page + 1} of {pagination.pages}</Button>
-          <Button variant='outline-secondary' onClick={onNext} disabled={pagination.last}>&#62;</Button>
-          <Button variant='outline-secondary' onClick={onLast} disabled={pagination.last}>&#8811;</Button>
+          <Button variant='outline-secondary' onClick={onNext} disabled={loading || pagination.last}>&#62;</Button>
+          <Button variant='outline-secondary' onClick={onLast} disabled={loading || pagination.last}>&#8811;</Button>
         </ButtonGroup>
       </Row>
     </Container>

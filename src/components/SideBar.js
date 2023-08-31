@@ -85,7 +85,7 @@ function SideBar({onSearch}) {
       </Col>
       <Col>
         <Form.Group className='mb-3'>
-          <Form.Label style={{fontWeight: 'bolder'}}>{filter.descending?'Decending':'Ascending'}</Form.Label>
+          <Form.Label style={{fontWeight: 'bolder'}}>{filter.descending ? 'Decending' : 'Ascending'}</Form.Label>
           <Form.Check type='switch' checked={filter.descending}
                       onChange={() => setFilter((prevFilter) => ({
                         ...prevFilter,
@@ -94,7 +94,8 @@ function SideBar({onSearch}) {
         </Form.Group>
       </Col>
     </Row>
-    <Button onClick={() => onSearch(filter)}>Search</Button><Button className="ms-2" variant="secondary" onClick={onClear}>Clear</Button>
+    <Button onClick={() => onSearch(filter)}>Search</Button>
+    <Button className="ms-2" variant="secondary" onClick={onClear}>Clear</Button>
   </Form>
 }
 
