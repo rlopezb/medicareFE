@@ -1,3 +1,7 @@
 a {
     text-decoration: none;
 }
+
+.sticky-top {
+    top: 1em;
+}

@@ -38,65 +38,68 @@ function SideBar({onSearch}) {
   useEffect(() => getSellers(), []);
   useEffect(() => getMax(), []);
 
-  return <Form style={{width: '24rem'}}>
-    <Row>
-      <Form.Group className='mb-3'>
-        <Form.Label style={{fontWeight: 'bolder'}}>Search</Form.Label>
-        <Form.Control name='search' type='search' placeholder='Search' className='me-2' aria-label='Search'
-                      value={filter.search}
-                      onChange={(event) => setFilter((prevFilter) => ({...prevFilter, search: event.target.value}))}/>
-      </Form.Group>
-    </Row>
-    <Row>
-      <Form.Group className='mb-3'>
-        <Form.Label style={{fontWeight: 'bolder'}}>Max price</Form.Label> - <NumericFormat
-          value={typeof filter.price === 'number' ? filter.price.toFixed(0) : ''}
-          displayType={'text'}
-          thousandSeparator={true} prefix={'$'}/>
-        <Form.Range value={filter.price} max={max} min={0}
-                    onChange={(event) => setFilter((prevFilter) => ({...prevFilter, price: +event.target.value}))}/>
-      </Form.Group>
-    </Row>
-    <Row>
-      <Form.Group className='mb-3'>
-        <Form.Label style={{fontWeight: 'bolder'}}>Seller</Form.Label>
-        <Form.Select value={filter.seller}
-                     onChange={(event) => setFilter((prevFilter) => ({...prevFilter, seller: event.target.value}))}>
-          <option hidden value=''>Select...</option>
-          {sellers.map(seller => {
-            return <option key={seller.id} value={seller.id}>{seller.name}</option>;
-          })}
-        </Form.Select>
-      </Form.Group>
-    </Row>
-    <Row>
-      <Col>
+  return <div className="sticky-top">
+    <h2 className='mt-3'>Filters</h2>
+    <Form style={{width: '24rem'}} className='mt-3'>
+      <Row>
         <Form.Group className='mb-3'>
-          <Form.Label style={{fontWeight: 'bolder'}}>Sort by</Form.Label>
-          <Form.Select value={filter.sort}
-                       onChange={(event) => setFilter((prevFilter) => ({...prevFilter, sort: event.target.value}))}>
+          <Form.Label style={{fontWeight: 'bolder'}}>Search</Form.Label>
+          <Form.Control name='search' type='search' placeholder='Search' className='me-2' aria-label='Search'
+                        value={filter.search}
+                        onChange={(event) => setFilter((prevFilter) => ({...prevFilter, search: event.target.value}))}/>
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group className='mb-3'>
+          <Form.Label style={{fontWeight: 'bolder'}}>Max price</Form.Label> - <NumericFormat
+            value={typeof filter.price === 'number' ? filter.price.toFixed(0) : ''}
+            displayType={'text'}
+            thousandSeparator={true} prefix={'$'}/>
+          <Form.Range value={filter.price} max={max + 1} min={0}
+                      onChange={(event) => setFilter((prevFilter) => ({...prevFilter, price: +event.target.value}))}/>
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group className='mb-3'>
+          <Form.Label style={{fontWeight: 'bolder'}}>Seller</Form.Label>
+          <Form.Select value={filter.seller}
+                       onChange={(event) => setFilter((prevFilter) => ({...prevFilter, seller: event.target.value}))}>
             <option hidden value=''>Select...</option>
-            <option value='name'>Name</option>
-            <option value='seller'>Seller</option>
-            <option value='description'>Description</option>
-            <option value='price'>Price</option>
+            {sellers.map(seller => {
+              return <option key={seller.id} value={seller.id}>{seller.name}</option>;
+            })}
           </Form.Select>
         </Form.Group>
-      </Col>
-      <Col>
-        <Form.Group className='mb-3'>
-          <Form.Label style={{fontWeight: 'bolder'}}>{filter.descending ? 'Decending' : 'Ascending'}</Form.Label>
-          <Form.Check type='switch' checked={filter.descending}
-                      onChange={() => setFilter((prevFilter) => ({
-                        ...prevFilter,
-                        descending: !prevFilter.descending
-                      }))}/>
-        </Form.Group>
-      </Col>
-    </Row>
-    <Button onClick={() => onSearch(filter)}>Search</Button>
-    <Button className="ms-2" variant="secondary" onClick={onClear}>Clear</Button>
-  </Form>
+      </Row>
+      <Row>
+        <Col>
+          <Form.Group className='mb-3'>
+            <Form.Label style={{fontWeight: 'bolder'}}>Sort by</Form.Label>
+            <Form.Select value={filter.sort}
+                         onChange={(event) => setFilter((prevFilter) => ({...prevFilter, sort: event.target.value}))}>
+              <option hidden value=''>Select...</option>
+              <option value='name'>Name</option>
+              <option value='seller'>Seller</option>
+              <option value='description'>Description</option>
+              <option value='price'>Price</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group className='mb-3'>
+            <Form.Label style={{fontWeight: 'bolder'}}>{filter.descending ? 'Decending' : 'Ascending'}</Form.Label>
+            <Form.Check type='switch' checked={filter.descending}
+                        onChange={() => setFilter((prevFilter) => ({
+                          ...prevFilter,
+                          descending: !prevFilter.descending
+                        }))}/>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Button onClick={() => onSearch(filter)}>Search</Button>
+      <Button className="ms-2" variant="secondary" onClick={onClear}>Clear all</Button>
+    </Form>
+  </div>
 }
 
 export default SideBar;
