@@ -3,14 +3,18 @@ import React, {useEffect, useState} from 'react';
 import {NumericFormat} from 'react-number-format';
 import api from '../api/api';
 import {toast} from 'react-toastify';
+import {dispatch as emit} from 'use-bus';
+import {BsSearch, BsXLg} from "react-icons/bs";
 
-function SideBar({onSearch}) {
+function SideBar() {
   const [max, setMax] = useState(0);
   const [filter, setFilter] = useState({search: '', price: '', seller: '', sort: '', descending: false})
   const [sellers, setSellers] = useState([]);
+
+
   let onClear = () => {
     setFilter({search: '', price: '', seller: '', sort: '', descending: false});
-    onSearch({search: '', price: '', seller: '', sort: '', descending: false});
+    emit({type: 'SEARCH', payload: {search: '', price: '', seller: '', sort: '', descending: false}});
   }
 
   let getSellers = () => {
@@ -96,8 +100,8 @@ function SideBar({onSearch}) {
           </Form.Group>
         </Col>
       </Row>
-      <Button onClick={() => onSearch(filter)}>Search</Button>
-      <Button className="ms-2" variant="secondary" onClick={onClear}>Clear all</Button>
+      <Button onClick={() => emit({type: 'SEARCH', payload: filter})}><BsSearch className='me-2 mb-1'/>Search</Button>
+      <Button className="ms-2" variant="secondary" onClick={onClear}><BsXLg className='me-2 mb-1'/>Clear all</Button>
     </Form>
   </div>
 }

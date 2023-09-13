@@ -2,13 +2,17 @@ import {Button, Card} from "react-bootstrap";
 import {NumericFormat} from "react-number-format";
 import React from "react";
 import {GrFormAdd} from "react-icons/gr";
+import {dispatch as emit} from 'use-bus';
+import {useSelector} from "react-redux";
 
-function MedicineCard({medicine, onAdd}) {
-  return <Card style={{width: '24rem', height: '18rem', border: 'none'}} className="shadow m-4">
+function MedicineCard({medicine}) {
+  const loading = useSelector(state => state.loading);
+
+  return <Card style={{width: '24rem', height: '18rem', border: 'none'}} className="medicineCard shadow m-4">
     <Card.Body className="d-flex flex-column">
       <Card.Title>{medicine.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{medicine.seller.name}</Card.Subtitle>
-      <Card.Text style={{maxHeight: '7.4rem', overflow:'hidden'}}>
+      <Card.Text style={{maxHeight: '7.4rem', overflow: 'hidden'}}>
         {medicine.description}
       </Card.Text>
       <div className="mt-auto" style={{textAlign: "end", fontWeight: "bolder"}}>
@@ -17,7 +21,7 @@ function MedicineCard({medicine, onAdd}) {
                          displayType={'text'}
                          thousandSeparator={true} prefix={'$'}/>
         </Card.Text>
-        <Button variant="light" onClick={() => onAdd(medicine.id)}><GrFormAdd
+        <Button disabled={loading} variant="light" onClick={() => emit({type: 'ADD_MEDICINE', payload: medicine.id})}><GrFormAdd
             style={{marginBottom: "1px", marginRight: "2px"}}/>Add to cart</Button>
       </div>
     </Card.Body>

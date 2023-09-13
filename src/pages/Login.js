@@ -31,10 +31,10 @@ function Login() {
     return dispatch => {
       api
           .post("/auth/login", {username: username, password: password})
-          .then(result => {
-            dispatch({type: "SET_USER", payload: result.data});
+          .then(response => {
+            dispatch({type: "SET_USER", payload: response.data});
             toast.success("User logged successfully");
-            if (result.data.role === "ROLE_ADMIN") {
+            if (response.data.role === "ROLE_ADMIN") {
               navigate('/admin');
             } else {
               navigate('/home');
