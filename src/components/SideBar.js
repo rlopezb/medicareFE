@@ -1,32 +1,33 @@
 import {Button, Col, Form, Row} from 'react-bootstrap';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NumericFormat} from 'react-number-format';
 import api from '../api/api';
 import {toast} from 'react-toastify';
 import {dispatch as emit} from 'use-bus';
 import {BsSearch, BsXLg} from "react-icons/bs";
+import {useDispatch, useSelector} from "react-redux";
 
 function SideBar() {
+  let dispatch = useDispatch();
   const [max, setMax] = useState(0);
   const [filter, setFilter] = useState({search: '', price: '', seller: '', sort: '', descending: false})
-  const [sellers, setSellers] = useState([]);
-
+  const sellers = useSelector(state => state.sellers);
 
   let onClear = () => {
     setFilter({search: '', price: '', seller: '', sort: '', descending: false});
     emit({type: 'SEARCH', payload: {search: '', price: '', seller: '', sort: '', descending: false}});
   }
 
-  let getSellers = () => {
+  let getSellers= useCallback(() =>  {
     api.get('/seller')
         .then(response => {
-          setSellers([...response.data]);
+          dispatch({type: 'SET_SELLERS', payload: [...response.data]});
         })
         .catch(error => {
           console.log(error);
           toast.error(error.message);
         });
-  };
+  },[dispatch]);
 
   let getMax = () => {
     api.get('/medicine/max')
@@ -39,7 +40,7 @@ function SideBar() {
         });
   }
 
-  useEffect(() => getSellers(), []);
+  useEffect(() => getSellers(), [getSellers]);
   useEffect(() => getMax(), []);
 
   return <div className="sticky-top">
@@ -69,7 +70,7 @@ function SideBar() {
           <Form.Select value={filter.seller}
                        onChange={(event) => setFilter((prevFilter) => ({...prevFilter, seller: event.target.value}))}>
             <option hidden value=''>Select...</option>
-            {sellers.map(seller => {
+            {Array.isArray(sellers) && sellers.map(seller => {
               return <option key={seller.id} value={seller.id}>{seller.name}</option>;
             })}
           </Form.Select>

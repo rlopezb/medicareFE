@@ -29,7 +29,7 @@ function Register() {
           .then(result => {
             dispatch({type: "SET_USER", payload: result.data});
             toast.success("User registered successfully");
-            navigate('/home');
+            navigate('/login');
           })
           .catch(error => {
             if (error.response) {

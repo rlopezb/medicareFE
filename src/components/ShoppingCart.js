@@ -33,7 +33,7 @@ function ShoppingCart({big}) {
   const total = () => {
     if (typeof purchase !== 'undefined') {
       let total = 0;
-      purchase.purchaseMedicines.forEach(purchaseMedicine => total = total + purchaseMedicine.quantity * purchaseMedicine.medicine.price);
+      purchase.purchaseMedicines.forEach(purchaseMedicine => total = total + purchaseMedicine.quantity * purchaseMedicine.price);
       return total;
     }
     return '';
@@ -98,7 +98,7 @@ function ShoppingCart({big}) {
             return <div key={purchaseMedicine.id}><Row>
               <Col style={{fontWeight: 'bold', fontSize: big ? '1.2rem' : '0.8rem'}}>{purchaseMedicine.medicine.name}</Col>
               <Col xs={"auto"} className='text-end'>
-                <NumericFormat value={purchaseMedicine.medicine.price.toFixed(2)}
+                <NumericFormat value={purchaseMedicine.price.toFixed(2)}
                                displayType={'text'}
                                thousandSeparator={true} prefix={'$'}/>
               </Col>

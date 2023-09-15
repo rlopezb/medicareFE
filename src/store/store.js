@@ -27,7 +27,8 @@ const saveState = (state) => {
 let initialState = {
   loading: false,
   user: undefined,
-  purchase: undefined
+  purchase: undefined,
+  sellers: []
 };
 
 function reducer(state = initialState, action) {
@@ -42,6 +43,10 @@ function reducer(state = initialState, action) {
       return {...state, purchase: action.payload};
     case 'DELETE_PURCHASE':
       return {...state, purchase: undefined};
+    case 'SET_SELLERS':
+      return {...state, sellers: action.payload};
+    case 'DELETE_SELLERS':
+      return {...state, sellers: []};
     default:
       return state;
   }

@@ -35,8 +35,9 @@ function AppBar() {
       </Navbar.Collapse>
       <Navbar.Collapse className="justify-content-end">
         {user.username}<Button disabled={loading} variant="light" className="ms-2"><BsPersonFill size={28}
-                                                                              className="text-primary"/></Button>
-        <Button disabled={loading || count() === '' || count() === 0} variant="light" onClick={() => onShow()}>
+                                                                                                 className="text-primary"/></Button>
+        <Button className={user.role === 'ROLE_ADMIN' ? 'invisible' : 'visible'}
+                disabled={loading || count() === '' || count() === 0} variant="light" onClick={() => onShow()}>
           <BsFillCartFill size={28} className="text-primary"/>
           <Badge pill bg="secondary"
                  className={(count() === '' || count() === 0) ? 'invisible' : 'visible'}>{count()}</Badge>
