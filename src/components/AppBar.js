@@ -2,7 +2,6 @@ import {Badge, Button, Container, Nav, Navbar, Offcanvas} from "react-bootstrap"
 import {BsCapsulePill, BsFillCartFill, BsPersonFill} from "react-icons/bs";
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
-import {dispatch as emit} from 'use-bus';
 import ShoppingCart from "./ShoppingCart";
 
 

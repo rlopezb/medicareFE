@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import api from "../api/api";
 import {toast} from "react-toastify";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import DefaultLayout from "../layouts/DefaultLayout";
-import {Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import OrderCard from "../components/OrderCard";
 
 function Orders() {
@@ -11,6 +11,7 @@ function Orders() {
   let [orders, setOrders] = useState([]);
   let [last, setLast] = useState(false);
   let [page, setPage] = useState(0);
+  const loading = useSelector(state => state.loading);
 
   const getOrders = useCallback(() => {
     dispatch({type: 'SET_LOADING', payload: true});
@@ -42,8 +43,12 @@ function Orders() {
               <OrderCard order={order}/>
             </Col>
           </Row>)}
-      <Row>
-      </Row>
+        <Row className='justify-content-start row-cols-auto'>
+          <Col className='text-center'>
+            <Button variant='dark' className={last ? 'invisible' : 'visible'} disabled={loading || last}
+                    onClick={onMore}>{loading ? 'Loading' : 'Load more'}</Button>
+          </Col>
+        </Row>
     </Container>
   </DefaultLayout>
 }
