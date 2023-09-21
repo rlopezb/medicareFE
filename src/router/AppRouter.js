@@ -6,8 +6,10 @@ import Home from "../pages/Home";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Checkout from "../pages/Checkout";
 import Orders from "../pages/Orders";
+import Landing from "../pages/Landing";
 function AppRouter(){
   return <Routes>
+    <Route path='/' element={<Landing/>}/>
     <Route path='/register' element={<Register/>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/home' element={<ProtectedRoute><Home/></ProtectedRoute>}/>

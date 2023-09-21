@@ -37,13 +37,21 @@ function Orders() {
 
   return <DefaultLayout>
     <Container>
-      {typeof orders !== 'undefined' && orders.map(order =>
+      <div className='h2 my-4'>Orders</div>
+      {typeof orders !== 'undefined' && orders.length>0 && orders.map(order =>
           <Row key={order.id}>
             <Col>
               <OrderCard order={order}/>
             </Col>
           </Row>)}
-        <Row className='justify-content-start row-cols-auto'>
+      {(typeof orders === 'undefined' || orders.length===0) &&
+          <Row>
+            <Col>
+              <h6 className='mt-1'>You don't have any order</h6>
+            </Col>
+          </Row>}
+
+      <Row className='justify-content-start row-cols-auto'>
           <Col className='text-center'>
             <Button variant='dark' className={last ? 'invisible' : 'visible'} disabled={loading || last}
                     onClick={onMore}>{loading ? 'Loading' : 'Load more'}</Button>

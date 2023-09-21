@@ -1,4 +1,4 @@
-import {Button, Card} from "react-bootstrap";
+import {Button, Card, Col} from "react-bootstrap";
 import {NumericFormat} from "react-number-format";
 import React, {useState} from "react";
 import {GrEdit, GrFormAdd, GrTrash} from "react-icons/gr";
@@ -17,7 +17,7 @@ function MedicineCard({medicine, role}) {
     <Card.Body className="d-flex flex-column">
       <Card.Title>{medicine.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{medicine.seller.name}</Card.Subtitle>
-      <Card.Text style={{maxHeight: '7.4rem', overflow: 'hidden'}}>
+      <Card.Text style={{maxHeight: '6rem', overflow: 'hidden'}}>
         {medicine.description}
       </Card.Text>
       <div className="mt-auto" style={{textAlign: "end", fontWeight: "bolder"}}>
@@ -25,16 +25,19 @@ function MedicineCard({medicine, role}) {
           <NumericFormat value={medicine.price.toFixed(2)}
                          displayType={'text'}
                          thousandSeparator={true} prefix={'$'}/>
+          {medicine.stock > 0 && <Col className='text-end text-muted' style={{fontWeight: "normal", fontSize:"small"}}>STOCK {medicine.stock}</Col>}
+          {medicine.stock === 0 && <Col className='text-end text-danger' style={{fontWeight: "normal", fontSize:"small"}}>OUT OF STOCK</Col>}
+
         </Card.Text>
         {role === 'ROLE_ADMIN' && <Button className='me-2' disabled={loading} variant="light"
                                           onClick={() => setShow(true)}><GrEdit
             style={{marginBottom: "2px", marginRight: "4px"}}/>Edit</Button>
         }
         {role === 'ROLE_ADMIN' && <Button disabled={loading} variant="light"
-                                          onClick={() =>  emit({type: 'DELETE', payload: medicine.id})}><GrTrash
+                                          onClick={() => emit({type: 'DELETE', payload: medicine.id})}><GrTrash
             style={{marginBottom: "2px", marginRight: "4px"}}/>Delete</Button>
         }
-        {role === 'ROLE_USER' && <Button disabled={loading} variant="light"
+        {role === 'ROLE_USER' && <Button disabled={loading || !medicine.enabled || medicine.stock === 0} variant="light"
                                          onClick={() => emit({type: 'ADD_MEDICINE', payload: medicine.id})}><GrFormAdd
             style={{marginBottom: "1px", marginRight: "2px"}}/>Add to cart</Button>
         }

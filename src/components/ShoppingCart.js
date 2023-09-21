@@ -1,10 +1,11 @@
 import {Button, Col, Container, Row, Stack} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {NumericFormat} from "react-number-format";
-import {BsCartCheckFill, BsCartXFill, BsTrash} from "react-icons/bs";
+import {BsCartCheckFill, BsCartPlusFill, BsCartXFill, BsTrash} from "react-icons/bs";
 import api from "../api/api";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import React from "react";
 
 function ShoppingCart({big}) {
   const loading = useSelector(state => state.loading);
@@ -84,8 +85,19 @@ function ShoppingCart({big}) {
       return <Row className='mt-3'>
         <Col>
           <Button disabled={loading} className='me-2' variant='primary' onClick={() => onPay()}><BsCartCheckFill
+              className='me-2 mb-1'/>Pay</Button>
+          <Button disabled={loading} className='me-2' variant='secondary'
+                  onClick={() => navigate('/home')}><BsCartPlusFill className='me-2 mb-1'/>Continue shopping</Button>
+          <Button disabled={loading} className='me-2' variant='secondary' onClick={() => onCancel()}><BsCartXFill
+              className='me-2 mb-1'/>Cancel</Button>
+        </Col>
+      </Row>
+    else
+      return <Row className='mt-3'>
+        <Col>
+          <Button disabled={loading} className='me-2' variant='primary'
+                  onClick={() => navigate('/checkout')}><BsCartCheckFill
               className='me-2 mb-1'/>Checkout</Button>
-          <Button disabled={loading} variant='secondary' onClick={() => onCancel()}><BsCartXFill className='me-2 mb-1'/>Cancel</Button>
         </Col>
       </Row>
 
@@ -111,6 +123,13 @@ function ShoppingCart({big}) {
             </div>;
           }
       )}
+      {(typeof purchase === 'undefined' || purchase.purchaseMedicines.length === 0) &&
+          <Row>
+            <Col>
+              <h6 className='mt-1'>The shopping cart is empty</h6>
+            </Col>
+          </Row>
+      }
     </Container>
     {typeof purchase !== 'undefined' && <Container>
       <Row>

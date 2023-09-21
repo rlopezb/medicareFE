@@ -12,13 +12,14 @@ function Home() {
   let dispatch = useDispatch();
   const purchase = useSelector(state => state.purchase);
   const loading = useSelector(state => state.loading);
+  const user = useSelector(state => state.user);
 
   let [medicines, setMedicines] = useState([]);
   let [page, setPage] = useState(0);
   let [last, setLast] = useState(false);
   let [filter, setFilter] = useState({});
 
-  useBus('ADD_MEDICINE', (action) => onAdd(action.payload), [purchase]);
+  useBus('ADD_MEDICINE', (action) => onAdd(action.payload), [purchase, medicines]);
   useBus('SEARCH', (action) => onSearch(action.payload), [filter, medicines, page]);
 
   const getMedicines = useCallback(() => {
@@ -69,6 +70,21 @@ function Home() {
             console.log(error);
             toast.error(error.message);
             dispatch({type: 'SET_LOADING', payload: false});
+          })
+          .then(() => {
+            const medicineIndex = medicines.findIndex((medicine) => medicine.id === id);
+            api.get('/medicine/' + id)
+                .then(response => {
+                  let medicine = response.data;
+                  const postMedicines = [...medicines];
+                  postMedicines[medicineIndex] = medicine;
+                  setMedicines(() => [...postMedicines]);
+                })
+                .catch(error => {
+                  console.log(error);
+                  toast.error(error.message);
+                  dispatch({type: 'SET_LOADING', payload: false});
+                });
           });
     } else {
       api.put('/purchase/' + purchase.id + '/add/' + id)
@@ -81,9 +97,24 @@ function Home() {
             console.log(error);
             toast.error(error.message);
             dispatch({type: 'SET_LOADING', payload: false});
+          })
+          .then(() => {
+            const medicineIndex = medicines.findIndex((medicine) => medicine.id === id);
+            api.get('/medicine/' + id)
+                .then(response => {
+                  let medicine = response.data;
+                  const postMedicines = [...medicines];
+                  postMedicines[medicineIndex] = medicine;
+                  setMedicines(() => [...postMedicines]);
+                })
+                .catch(error => {
+                  console.log(error);
+                  toast.error(error.message);
+                  dispatch({type: 'SET_LOADING', payload: false});
+                });
           });
     }
-  }
+  };
 
   const onMore = () => {
     setPage(page + 1);
@@ -108,7 +139,7 @@ function Home() {
             <Row className='justify-content-start row-cols-auto'>
               {medicines.map(medicine =>
                   <Col key={medicine.id} className='m-0 p-0'>
-                    <MedicineCard medicine={medicine}></MedicineCard>
+                    <MedicineCard medicine={medicine} role={user.role}></MedicineCard>
                   </Col>
               )}
             </Row>
